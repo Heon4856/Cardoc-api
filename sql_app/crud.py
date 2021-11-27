@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-
+import bcrypt
 from . import models, schemas
 
 
@@ -12,8 +12,8 @@ def get_user_by_register_id(db: Session, register_id: str):
 
 
 def create_user(db: Session, user: schemas.UserRegister):
-    fake_hashed_password = user.pw + "notreallyhashed"
-    db_user = models.User(register_id=user.register_id, hashed_password=fake_hashed_password)
+    hashed_password = bcrypt.hashpw(user.pw.encode("utf-8"), bcrypt.gensalt()).decode()
+    db_user = models.User(register_id=user.register_id, hashed_password=hashed_password)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
