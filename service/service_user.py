@@ -56,8 +56,7 @@ class JWTBearerForAdminOnly(HTTPBearer):
     def verify_jwt(self, jwtoken: str) -> bool:
         isTokenValid: bool = False
         try:
-            token_without_Bearer = jwtoken.split()[1]
-            payload = decodeJWT(token_without_Bearer)
+            payload = decodeJWT(jwtoken)
         except:
             payload = None
         if payload:
@@ -67,8 +66,7 @@ class JWTBearerForAdminOnly(HTTPBearer):
 
 
 def authorize(authorization=Header(None)):
-    token_without_Bearer = authorization.split()[2]
-    payload=decodeJWT(token_without_Bearer)
-    print(payload)
+    token_without_bearer=authorization.split()[1]
+    payload=decodeJWT(token_without_bearer)
     user_id = payload["user_id"]
     return user_id
