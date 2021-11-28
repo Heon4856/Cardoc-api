@@ -1,6 +1,6 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, conint
 from typing import List
-
+from enum import Enum
 
 class UserRegister(BaseModel):
     register_id: str = None
@@ -28,3 +28,15 @@ class User(BaseModel):
 
     class Config:
         orm_mode = True
+
+class TirePosition(Enum):
+    FRONT = "FRONT"
+    REAR = "REAR"
+
+
+class TireInfo(BaseModel):
+    trim_id: int
+    position: TirePosition
+    width: conint(gt=0)
+    flatness_ratio: conint(gt=0)
+    wheel_size: conint(gt=0)

@@ -18,3 +18,9 @@ def create_user(db: Session, user: schemas.UserRegister):
     db.commit()
     db.refresh(db_user)
     return db_user
+
+def create_tire_info(db: Session, tire: models.Tire):
+    db.add(tire)
+    db.commit()
+    db.refresh(tire)
+    return tire
