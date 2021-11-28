@@ -8,7 +8,7 @@ from starlette.responses import JSONResponse
 from service import service_user
 from service.service_user import JWTBearerForAdminOnly, authorize
 from sql_app import schemas, crud, models
-from sql_app.crud import create_tire_info
+from sql_app.crud import create_tire_info, get_tire_info
 from sql_app.database import SessionLocal
 
 from typing import List
@@ -71,6 +71,14 @@ def create_user(tire_register_list: List[schemas.TireRegister], db: Session = De
                 )
 
     return "good"
+
+
+@router.get("/info", dependencies=[Depends(JWTBearerForAdminOnly())])
+def tire_info( db: Session = Depends(get_db), user_id: int = Depends(authorize)):
+
+    return get_tire_info(db,user_id)
+
+
 
 
 def is_tire_format(tire_info: str) -> bool:

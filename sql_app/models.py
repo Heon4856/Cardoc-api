@@ -25,3 +25,7 @@ class Tire(Base):
     width = Column(Integer)
     flatness_ratio = Column(Integer)
     wheel_size = Column(Integer)
+
+    class Config:
+        arbitrary_types_allowed = True
+        orm_mode = True

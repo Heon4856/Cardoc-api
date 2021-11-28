@@ -1,7 +1,8 @@
 from sqlalchemy.orm import Session
 import bcrypt
 from . import models, schemas
-
+from pydantic import parse_obj_as
+from typing import List
 
 def get_user(db: Session, user_id: int):
     return db.query(models.User).filter(models.User.id == user_id).first()
@@ -24,3 +25,7 @@ def create_tire_info(db: Session, tire: models.Tire):
     db.commit()
     db.refresh(tire)
     return tire
+
+def get_tire_info(db: Session, user_id: int):
+    tire_list = db.query(models.Tire).filter(models.Tire.user_id == user_id).all()
+    return parse_obj_as(List[schemas.TireInfo], tire_list)

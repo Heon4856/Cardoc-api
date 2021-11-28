@@ -40,3 +40,5 @@ class TireInfo(BaseModel):
     width: conint(gt=0)
     flatness_ratio: conint(gt=0)
     wheel_size: conint(gt=0)
+    class Config:
+        orm_mode = True
