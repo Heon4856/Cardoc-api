@@ -5,7 +5,6 @@ from fastapi import APIRouter, Depends, HTTPException, Header
 from sqlalchemy.orm import Session
 from starlette.responses import JSONResponse
 
-from service import service_user
 from service.service_user import JWTBearerForAdminOnly, authorize
 from sql_app import schemas, crud, models
 from sql_app.crud import create_tire_info, get_tire_info
@@ -29,9 +28,10 @@ def get_db():
         db.close()
 
 
-@router.post("/register", dependencies=[Depends(JWTBearerForAdminOnly())])
+@router.post("/register", dependencies=[Depends(JWTBearerForAdminOnly())], tags=['tire'])
 def create_user(tire_register_list: List[schemas.TireRegister], db: Session = Depends(get_db),
                 user_id: int = Depends(authorize)):
+    success_list=[]
     for tire_register in tire_register_list:
         trim_id = tire_register.trimId
         url = "".join([URL, str(trim_id)])
@@ -58,6 +58,7 @@ def create_user(tire_register_list: List[schemas.TireRegister], db: Session = De
                         wheel_size=wheel
                     )
                 )
+                success_list.append(f'{tire_register} front_tire')
             if is_tire_format(rear_tire):
                 width, flat, wheel = re.split('[/R]', rear_tire)
                 create_tire_info(db, models.Tire(
@@ -69,11 +70,13 @@ def create_user(tire_register_list: List[schemas.TireRegister], db: Session = De
                     wheel_size=wheel
                 )
                 )
+                success_list.append(f'{tire_register} rear_tire')
 
-    return "good"
+
+    return JSONResponse(content={"success_list":success_list}, status_code=200)
 
 
-@router.get("/info", dependencies=[Depends(JWTBearerForAdminOnly())])
+@router.get("/info", dependencies=[Depends(JWTBearerForAdminOnly())], tags=['tire'])
 def tire_info( db: Session = Depends(get_db), user_id: int = Depends(authorize)):
 
     return get_tire_info(db,user_id)
