@@ -5,16 +5,10 @@ from sqlalchemy.orm import Session
 from service import service_user
 from sql_app import crud
 import dto
-from sql_app.database import SessionLocal
+from sql_app.database import get_db
 
 router = APIRouter(prefix="/auth")
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 @router.post("/register", response_model=dto.User, tags=['auth'])
