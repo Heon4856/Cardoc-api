@@ -1,36 +1,24 @@
 import requests
-import re
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from starlette.responses import JSONResponse
 
 from consts import URL
-from service.service_tire import is_tire_format
+from service.service_tire import save_tire_info
 from service.service_user import JWTBearerForAdminOnly, authorize
-from sql_app import models
 import dto
-from sql_app.crud import create_tire_info, get_tire_info
-from sql_app.database import SessionLocal
+from sql_app.crud import get_tire_info
+from sql_app.database import get_db
 
 from typing import List
 
-from dto import TirePosition
-
 router = APIRouter(prefix="/tire")
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 @router.post("/register", dependencies=[Depends(JWTBearerForAdminOnly())], tags=['tire'])
 def create_user(tire_register_list: List[dto.TireRegister], db: Session = Depends(get_db),
                 user_id: int = Depends(authorize)):
-    success_list = []
+
     for tire_register in tire_register_list:
         trim_id = tire_register.trimId
         url = "".join([URL, str(trim_id)])
@@ -41,35 +29,7 @@ def create_user(tire_register_list: List[dto.TireRegister], db: Session = Depend
         else:
             car_info = response.json()
 
-            front_tire = car_info["spec"]["driving"]["frontTire"]["value"]
-            rear_tire = car_info["spec"]["driving"]["rearTire"]["value"]
-            print(front_tire)
-            tires = []
-            if is_tire_format(front_tire):
-                width, flat, wheel = re.split('[/R]', front_tire)
-                create_tire_info(db,
-                                 models.Tire(
-                                     user_id=user_id,
-                                     trim_id=trim_id,
-                                     position=TirePosition.FRONT,
-                                     width=width,
-                                     flatness_ratio=flat,
-                                     wheel_size=wheel
-                                 )
-                                 )
-                success_list.append(f'{tire_register} front_tire')
-            if is_tire_format(rear_tire):
-                width, flat, wheel = re.split('[/R]', rear_tire)
-                create_tire_info(db, models.Tire(
-                    user_id=user_id,
-                    trim_id=trim_id,
-                    position=TirePosition.REAR,
-                    width=width,
-                    flatness_ratio=flat,
-                    wheel_size=wheel
-                )
-                                 )
-                success_list.append(f'{tire_register} rear_tire')
+            success_list = save_tire_info(car_info, db, tire_register, trim_id, user_id)
 
     return JSONResponse(content={"success_list": success_list}, status_code=200)
 
