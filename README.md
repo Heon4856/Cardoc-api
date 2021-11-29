@@ -63,12 +63,12 @@
 
 🔍 **상세구현 가이드**
 
-- 자동차 정보 조회 API의 사용은 아래와 같이 5000, 9000부분에 trimId를 넘겨서 조회할 수 있다.
- **자동차 정보 조회 API 사용 예제 → 
-📄** [https://dev.mycar.cardoc.co.kr/v1/trim/5000](https://dev.mycar.cardoc.co.kr/v1/trim/5000)
-**📄** [https://dev.mycar.cardoc.co.kr/v1/trim/9000
-📄](https://dev.mycar.cardoc.co.kr/v1/trim/9000) [https://dev.mycar.cardoc.co.kr/v1/trim/11000
-📄](https://dev.mycar.cardoc.co.kr/v1/trim/11000) [https://dev.mycar.cardoc.co.kr/v1/trim/15000](https://dev.mycar.cardoc.co.kr/v1/trim/15000)
+- 자동차 정보 조회 API의 사용은 아래와 같이 5000, 9000부분에 trimId를 넘겨서 조회할 수 있다.  
+ **자동차 정보 조회 API 사용 예제 →**  
+  [https://dev.mycar.cardoc.co.kr/v1/trim/5000](https://dev.mycar.cardoc.co.kr/v1/trim/5000)  
+ [https://dev.mycar.cardoc.co.kr/v1/trim/9000](https://dev.mycar.cardoc.co.kr/v1/trim/9000)  
+    [https://dev.mycar.cardoc.co.kr/v1/trim/11000](https://dev.mycar.cardoc.co.kr/v1/trim/11000)  
+  [https://dev.mycar.cardoc.co.kr/v1/trim/15000](https://dev.mycar.cardoc.co.kr/v1/trim/15000)
 - 조회된 정보에서 타이어 정보는 spec → driving → frontTire/rearTire 에서 찾을 수 있다.
 - 타이어 정보는 205/75R18의 포맷이 정상이다. 205는 타이어 폭을 의미하고 75R은 편평비, 그리고 마지막 18은 휠사이즈로써 {폭}/{편평비}R{18}과 같은 구조이다.
  위와 같은 형식의 데이터일 경우만 DB에 항목별로 나누어 서로다른 Column에 저장하도록 한다.
@@ -80,3 +80,35 @@
 🎁 **요구사항**
 
 - 사용자 ID를 통해서 2번 API에서 저장한 타이어 정보를 조회할 수 있어야 한다.
+
+---
+# 구현 내용
+1. 배포주소:
+http://118.67.143.107/  
+ 2. 테스트가능 주소:
+http://118.67.143.107/docs
+    
+
+
+
+# 실행방법
+```shell
+git clone https://github.com/Heon4856/Cardoc-api.git
+```
+
+```shell
+# 루트 디렉토리에 env.py 파일안에 다음과 같은 내용 추가.
+SECRET_KEY = "시크릿키"
+ALGORITHM = "JWT 알고리즘 종류"
+ACCESS_TOKEN_EXPIRE_MINUTES = 시간, int타입으로
+```
+
+```shell
+pip install -r requirements.txt
+```
+
+```shell
+uvicorn main:app --host=0.0.0.0 --port=8000
+```
+
+localhost:8000에서 확인가능 합니다.
