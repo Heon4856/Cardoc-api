@@ -18,7 +18,7 @@ router = APIRouter(prefix="/tire")
 @router.post("/register", dependencies=[Depends(JWTBearerForAdminOnly())], tags=['tire'])
 def create_user(tire_register_list: List[dto.TireRegister], db: Session = Depends(get_db),
                 user_id: int = Depends(authorize)):
-
+    success_list= []
     for tire_register in tire_register_list:
         trim_id = tire_register.trimId
         url = "".join([URL, str(trim_id)])
@@ -26,10 +26,9 @@ def create_user(tire_register_list: List[dto.TireRegister], db: Session = Depend
             response = requests.get(url, timeout=3)
         except Exception:
             raise Exception
-        else:
-            car_info = response.json()
 
-            success_list = save_tire_info(car_info, db, tire_register, trim_id, user_id)
+        car_info = response.json()
+        success_list = save_tire_info(car_info, db, tire_register, trim_id, user_id,success_list)
 
     return JSONResponse(content={"success_list": success_list}, status_code=200)
 

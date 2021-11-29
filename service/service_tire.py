@@ -11,8 +11,7 @@ def is_tire_format(tire_info: str) -> bool:
     return False
 
 
-def save_tire_info(car_info, db, tire_register, trim_id, user_id):
-    success_list = []
+def save_tire_info(car_info, db, tire_register, trim_id, user_id, success_list):
     front_tire = car_info["spec"]["driving"]["frontTire"]["value"]
     rear_tire = car_info["spec"]["driving"]["rearTire"]["value"]
 
