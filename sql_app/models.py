@@ -3,7 +3,7 @@ from sqlalchemy import Boolean, Column, Integer, String, ForeignKey
 from .database import Base
 from  sqlalchemy.types import Enum
 
-from .schemas import TirePosition
+from dto import TirePosition
 
 
 class User(Base):

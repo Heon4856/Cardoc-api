@@ -1,7 +1,6 @@
-import jwt
 from typing import Optional
 from datetime import datetime, timedelta
-from sql_app import schemas
+import dto
 
 from env import SECRET_KEY, ALGORITHM
 import time
@@ -28,7 +27,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     return encoded_jwt
 
 
-def create_token( user: schemas.User):
+def create_token(user: dto.User):
     access_token_expires = timedelta(minutes=60)
     access_token = create_access_token(data={"user_id": user.id, "authority": ["ADMIN"]},
                                        expires_delta=access_token_expires).decode("utf-8")

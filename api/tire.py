@@ -1,18 +1,18 @@
-import bcrypt
 import requests
 import re
-from fastapi import APIRouter, Depends, HTTPException, Header
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from starlette.responses import JSONResponse
 
 from service.service_user import JWTBearerForAdminOnly, authorize
-from sql_app import schemas, crud, models
+from sql_app import models
+import dto
 from sql_app.crud import create_tire_info, get_tire_info
 from sql_app.database import SessionLocal
 
 from typing import List
 
-from sql_app.schemas import TirePosition
+from dto import TirePosition
 
 router = APIRouter(prefix="/tire")
 
@@ -29,7 +29,7 @@ def get_db():
 
 
 @router.post("/register", dependencies=[Depends(JWTBearerForAdminOnly())], tags=['tire'])
-def create_user(tire_register_list: List[schemas.TireRegister], db: Session = Depends(get_db),
+def create_user(tire_register_list: List[dto.TireRegister], db: Session = Depends(get_db),
                 user_id: int = Depends(authorize)):
     success_list=[]
     for tire_register in tire_register_list:
