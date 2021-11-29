@@ -2,7 +2,7 @@ import bcrypt
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from service import service_user
+from service import service_auth
 from sql_app import crud
 import dto
 from sql_app.database import get_db
@@ -28,6 +28,6 @@ def login(user: dto.UserRegister, db: Session = Depends(get_db)):
 
     if not bcrypt.checkpw(user.pw.encode('utf-8'), db_user.hashed_password.encode('utf-8')):
         return HTTPException(status_code=400, detail="패스워드를 확인해주세요")
-    create_token = service_user.create_token(db_user)
+    create_token = service_auth.create_token(db_user)
 
     return create_token

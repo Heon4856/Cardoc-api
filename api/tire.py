@@ -5,7 +5,7 @@ from starlette.responses import JSONResponse
 
 from consts import URL
 from service.service_tire import save_tire_info
-from service.service_user import JWTBearerForAdminOnly, authorize
+from service.service_auth import JWTBearerForAdminOnly, authorize
 import dto
 from sql_app.crud import get_tire_info
 from sql_app.database import get_db
