@@ -1,5 +1,8 @@
 import re
 
+import requests
+
+from consts import URL
 from dto import TirePosition
 from sql_app import models
 from sql_app.crud import create_tire_info
@@ -43,3 +46,14 @@ def save_tire_info(car_info, db, tire_register, trim_id, user_id, success_list):
         success_list.append(f'{tire_register} rear_tire')
 
     return success_list
+
+
+def get_car_info_from_api(tire_register):
+    trim_id =  tire_register.trimId
+    url = "".join([URL, str(trim_id)])
+    try:
+        response = requests.get(url, timeout=3)
+    except Exception:
+        raise Exception
+    car_info =  response.json()
+    return  car_info, trim_id
